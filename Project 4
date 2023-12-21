@@ -1,0 +1,45 @@
+# Import necessary libraries
+import pandas as pd
+from sklearn.model_selection import train_test_split
+from sklearn.neighbors import KNeighborsRegressor
+from sklearn.metrics import mean_squared_error
+import matplotlib.pyplot as plt
+
+# Load your dataset (replace 'your_dataset.csv' with your actual file)
+# Example: df = pd.read_csv('your_dataset.csv')
+
+# Sample data
+data = {
+    'Beacon1': [-60, -70, -80, -90],
+    'Beacon2': [-65, -75, -85, -95],
+    'Beacon3': [-55, -65, -75, -85],
+    'X': [0, 1, 2, 3],  # X-coordinate (user's position)
+    'Y': [0, 1, 2, 3]   # Y-coordinate (user's position)
+}
+
+df = pd.DataFrame(data)
+
+# Split the dataset into training and testing sets
+X_train, X_test, y_train, y_test = train_test_split(df[['Beacon1', 'Beacon2', 'Beacon3']], df[['X', 'Y']], test_size=0.2, random_state=42)
+
+# Build a KNeighborsRegressor model
+model = KNeighborsRegressor(n_neighbors=3)
+
+# Train the model
+model.fit(X_train, y_train)
+
+# Make predictions on the test set
+y_pred = model.predict(X_test)
+
+# Evaluate the performance of the model
+mse = mean_squared_error(y_test, y_pred)
+print(f"Mean Squared Error: {mse}")
+
+# Visualize the actual vs. predicted positions
+plt.scatter(y_test['X'], y_test['Y'], label='Actual')
+plt.scatter(y_pred[:, 0], y_pred[:, 1], label='Predicted')
+plt.title('Actual vs. Predicted Positions')
+plt.xlabel('X-coordinate')
+plt.ylabel('Y-coordinate')
+plt.legend()
+plt.show()
